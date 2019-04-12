@@ -3,7 +3,7 @@
 ## Description
 This does nothing but connect and log without plugins defined in config.json.
 
-`echo` plugin is included in this repo, build it with `go build -buildmode=plugin plugins/echo.go -o echo.so`
+`echo` plugin is included in this repo, build it with `go build -buildmode=plugin -o echo.so plugins/echo.go`
 
 
 ## To build - This builds the main program, and the echo plugin.
