@@ -4,6 +4,8 @@
 This does nothing but connect and log without plugins defined in config.json.
 
 `echo` plugin is included in this repo, build it with `go build -buildmode=plugin -o echo.so plugins/echo.go`
+`diceroll` plugin is included in this repo, build it with `go build -buildmode=plugin -o diceroll.so plugins/diceroll.go`
+
 
 ## Caveats
 The way that websockets work in Slack is such that your bot will only get

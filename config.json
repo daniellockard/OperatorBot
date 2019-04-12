@@ -1,1 +1,6 @@
-{"plugins":[{"name": "Echo", "module_path": "echo.so"}]}
+{
+  "plugins":[
+    {"name": "Echo", "module_path": "echo.so"},
+    {"name": "Dice", "module_path": "diceroll.so"}
+  ]
+}
