@@ -14,7 +14,7 @@ working, `/invite @botname` in Slack, in the channels you want the bot to listen
 in.
 
 
-## To build - This builds the main program, and the echo plugin.
+## To build - This builds the main program, the echo plugin, and the diceroll plugin.
 * `./build.sh` 
 
 ## How do I include my plugin?
