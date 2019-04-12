@@ -1,6 +1,4 @@
 # OperatorBot
 
 This does nothing but connect and log without plugins defined in config.json.
-echo.so is included in this repo and the source is here:
-
-https://github.com/daniellockard/OperatorBotEcho
+echo plugin is included in this repo, build it with `go build -buildmode=plugin plugins/echo.go -o echo.so`
