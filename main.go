@@ -17,6 +17,8 @@ type config struct {
 	} `json:"plugins"`
 }
 
+type ProcessFunction = func(slackRTMClient *slack.RTM, slackAPIClient *slack.Client, message string, channel string)
+
 func main() {
 	pluginProcessFunctions := []plugin.Symbol{}
 	slackAPIClient := slack.New(os.Getenv("SLACK_TOKEN"))
@@ -69,7 +71,7 @@ func main() {
 			message := ev.Msg.Text
 			log.Infof("Message: %v\n", ev)
 			for _, processFunction := range pluginProcessFunctions {
-				go processFunction.(func(slackRTMClient *slack.RTM, slackAPIClient *slack.Client, message string, channel string))(slackRTMClient, slackAPIClient, message, channel)
+				go processFunction.(ProcessFunction)(slackRTMClient, slackAPIClient, message, channel)
 			}
 
 		case *slack.PresenceChangeEvent:
