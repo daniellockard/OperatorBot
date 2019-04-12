@@ -10,11 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var SlackAPIClient *slack.Client
-var SlackRTMClient *slack.RTM
-var PluginConfig Config
-
-type Config struct {
+type config struct {
 	Plugins []struct {
 		Name       string `json:"name"`
 		ModulePath string `json:"module_path"`
@@ -23,9 +19,9 @@ type Config struct {
 
 func main() {
 	pluginProcessFunctions := []plugin.Symbol{}
-	SlackAPIClient = slack.New(os.Getenv("SLACK_TOKEN"))
-	SlackRTMClient = SlackAPIClient.NewRTM()
-	go SlackRTMClient.ManageConnection()
+	slackAPIClient := slack.New(os.Getenv("SLACK_TOKEN"))
+	slackRTMClient := slackAPIClient.NewRTM()
+	go slackRTMClient.ManageConnection()
 
 	configFile, err := os.Open("config.json")
 	if err != nil {
@@ -38,12 +34,13 @@ func main() {
 		log.Panicf("error reading config.json: %s\n", err)
 	}
 
-	err = json.Unmarshal(configBytes, &PluginConfig)
+	var pluginConfig config
+	err = json.Unmarshal(configBytes, &pluginConfig)
 	if err != nil {
 		log.Panicf("error reading config.json: %s\n", err)
 	}
 
-	for _, pluginToLoad := range PluginConfig.Plugins {
+	for _, pluginToLoad := range pluginConfig.Plugins {
 		log.Infof("Loading plugin %s", pluginToLoad.Name)
 		loadedPlugin, err := plugin.Open(pluginToLoad.ModulePath)
 		if err != nil {
@@ -58,7 +55,7 @@ func main() {
 		pluginProcessFunctions = append(pluginProcessFunctions, processFunction)
 	}
 
-	for msg := range SlackRTMClient.IncomingEvents {
+	for msg := range slackRTMClient.IncomingEvents {
 		log.Info("Event Received: ")
 		switch ev := msg.Data.(type) {
 		case *slack.HelloEvent:
@@ -72,7 +69,7 @@ func main() {
 			message := ev.Msg.Text
 			log.Infof("Message: %v\n", ev)
 			for _, processFunction := range pluginProcessFunctions {
-				go processFunction.(func(slackRTMClient *slack.RTM, slackAPIClient *slack.Client, message string, channel string))(SlackRTMClient, SlackAPIClient, message, channel)
+				go processFunction.(func(slackRTMClient *slack.RTM, slackAPIClient *slack.Client, message string, channel string))(slackRTMClient, slackAPIClient, message, channel)
 			}
 
 		case *slack.PresenceChangeEvent:
